@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tutoring Sign Up{% endblock %}
+{% block heading %}Sign up for tutoring slots{% endblock %}
+
+{% block header %}
+<style>
+    .signup-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .preferences-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+    
+    .time-grid {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: white;
+    }
+    
+    .time-grid th,
+    .time-grid td {
+        padding: 12px;
+        border: 2px solid #ddd;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    .time-header {
+        background: #003262;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+    }
+    
+    .row-header {
+        background: #FDB515;
+        font-weight: bold;
+        min-width: 120px;
+        font-size: 14px;
+    }
+    
+    .time-cell {
+        min-width: 150px;
+        padding: 8px;
+    }
+    
+    .preference-radio {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+        padding: 5px;
+    }
+    
+    .preference-option {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+    }
+    
+    .preference-option input[type="radio"] {
+        cursor: pointer;
+    }
+    
+    .preference-option label {
+        cursor: pointer;
+        margin: 0;
+    }
+    
+    /* Color coding for preference levels */
+    .preference-0 { 
+        background-color: #ffcccc; 
+    }
+    
+    .preference-1 { 
+        background-color: #fff4cc; 
+    }
+    
+    .preference-2 { 
+        background-color: #cce5ff; 
+    }
+    
+    .preference-3 { 
+        background-color: #ccffcc; 
+    }
+    
+    .building-prefs {
+        display: flex;
+        gap: 30px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+    }
+    
+    .building-pref-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .building-pref-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .building-pref-item label {
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .submit-button {
+        background: #003262;
+        color: white;
+        padding: 15px 40px;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    
+    .submit-button:hover {
+        background: #002147;
+    }
+    
+    .legend {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        border-radius: 5px;
+        flex-wrap: wrap;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .legend-color {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+    
+    .help-text {
+        font-style: italic;
+        color: #666;
+        margin-top: 10px;
+    }
+    
+    .adjacent-select {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .time-grid {
+            font-size: 12px;
+        }
+        
+        .time-grid th,
+        .time-grid td {
+            padding: 6px;
+        }
+        
+        .preference-option {
+            font-size: 11px;
+        }
+    }
+</style>
+
+<script>
+    function updateCellColor(radio) {
+        const cell = radio.closest('td');
+        if (!cell) return;
+        
+        const value = radio.value;
+        
+        // Remove all preference classes
+        cell.classList.remove('preference-0', 'preference-1', 'preference-2', 'preference-3');
+        
+        // Add the selected preference class
+        cell.classList.add('preference-' + value);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize colors based on checked radios
+        document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            updateCellColor(radio);
+        });
+        
+        // Add event listeners to all radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                updateCellColor(this);
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <h2>Sign up for tutoring slots</h2>
+    
+    <div class="preferences-section">
+        <h3>Instructions</h3>
+        <p>For each time slot below, indicate your preference level. The scheduler will use these preferences to assign tutoring slots.</p>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ccffcc;"></div>
+                <span><strong>Green</strong> = Preferred</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #cce5ff;"></div>
+                <span><strong>Blue</strong> = Can make it</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #fff4cc;"></div>
+                <span><strong>Yellow</strong> = Less preferred but can make it</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ffcccc;"></div>
+                <span><strong>Red</strong> = Cannot make it</span>
+            </div>
+        </div>
+    </div>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Building Preferences -->
+        <div class="preferences-section">
+            <h3>Building Preferences</h3>
+            <p>Select which building(s) you are available to tutor in:</p>
+            <div class="building-prefs">
+                <div class="building-pref-item">
+                    {{ form.cory_preference }}
+                    <label for="{{ form.cory_preference.id_for_label }}">Cory Hall</label>
+                </div>
+                <div class="building-pref-item">
+                    {{ form.soda_preference }}
+                    <label for="{{ form.soda_preference.id_for_label }}">Soda Hall</label>
+                </div>
+            </div>
+            
+            <h3>Adjacent Slots Preference</h3>
+            <p>"Adjacent Slots" means having two 1-hour time slots back-to-back, forming a 2-hour tutoring block.</p>
+            {{ form.adjacent_slots }}
+        </div>
+        
+        <!-- Time Slot Grid -->
+        <h3>Time Slot Availability (12 PM - 5 PM, Monday - Friday)</h3>
+        <div style="overflow-x: auto;">
+            <table class="time-grid">
+                <thead>
+                    <tr>
+                        <th class="time-header row-header">Time</th>
+                        <th class="time-header">Monday</th>
+                        <th class="time-header">Tuesday</th>
+                        <th class="time-header">Wednesday</th>
+                        <th class="time-header">Thursday</th>
+                        <th class="time-header">Friday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">12 PM - 1 PM</td>
+                        <td class="time-cell">{{ form.slot_0_12 }}</td>
+                        <td class="time-cell">{{ form.slot_1_12 }}</td>
+                        <td class="time-cell">{{ form.slot_2_12 }}</td>
+                        <td class="time-cell">{{ form.slot_3_12 }}</td>
+                        <td class="time-cell">{{ form.slot_4_12 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">1 PM - 2 PM</td>
+                        <td class="time-cell">{{ form.slot_0_13 }}</td>
+                        <td class="time-cell">{{ form.slot_1_13 }}</td>
+                        <td class="time-cell">{{ form.slot_2_13 }}</td>
+                        <td class="time-cell">{{ form.slot_3_13 }}</td>
+                        <td class="time-cell">{{ form.slot_4_13 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">2 PM - 3 PM</td>
+                        <td class="time-cell">{{ form.slot_0_14 }}</td>
+                        <td class="time-cell">{{ form.slot_1_14 }}</td>
+                        <td class="time-cell">{{ form.slot_2_14 }}</td>
+                        <td class="time-cell">{{ form.slot_3_14 }}</td>
+                        <td class="time-cell">{{ form.slot_4_14 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">3 PM - 4 PM</td>
+                        <td class="time-cell">{{ form.slot_0_15 }}</td>
+                        <td class="time-cell">{{ form.slot_1_15 }}</td>
+                        <td class="time-cell">{{ form.slot_2_15 }}</td>
+                        <td class="time-cell">{{ form.slot_3_15 }}</td>
+                        <td class="time-cell">{{ form.slot_4_15 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">4 PM - 5 PM</td>
+                        <td class="time-cell">{{ form.slot_0_16 }}</td>
+                        <td class="time-cell">{{ form.slot_1_16 }}</td>
+                        <td class="time-cell">{{ form.slot_2_16 }}</td>
+                        <td class="time-cell">{{ form.slot_3_16 }}</td>
+                        <td class="time-cell">{{ form.slot_4_16 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center;">
+            <button type="submit" class="submit-button">Submit Availability</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

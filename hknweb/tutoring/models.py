@@ -65,3 +65,61 @@ class Slot(models.Model):
             full_name=Concat("first_name", Value(" "), "last_name")
         ).values_list("full_name", flat=True)
         return ", ".join(tutors)
+
+
+class TutoringAvailability(models.Model):
+    """Stores individual tutor's time slot preferences and building preferences"""
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="tutoring_availability"
+    )
+    semester = models.ForeignKey(
+        Semester, on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    # Time slot preference (0-3 representing preference levels)
+    # 0 = cannot make it (red), 1 = less preferred (yellow),
+    # 2 = can make it (blue), 3 = preferred (green)
+    weekday = models.IntegerField(choices=Slot.WEEKDAY_CHOICES)
+    hour = models.IntegerField(
+        choices=[
+            (12, "12 PM"),
+            (13, "1 PM"),
+            (14, "2 PM"),
+            (15, "3 PM"),
+            (16, "4 PM"),
+        ]
+    )
+    preference_level = models.IntegerField(
+        default=0,
+        choices=[
+            (0, "Cannot make it"),
+            (1, "Less preferred but can make it"),
+            (2, "Can make it"),
+            (3, "Preferred"),
+        ],
+    )
+
+    # Building preferences
+    cory_preference = models.BooleanField(default=True)
+    soda_preference = models.BooleanField(default=True)
+
+    # Adjacent slots preference (from old system)
+    adjacent_slots_preference = models.IntegerField(
+        default=-1,
+        choices=[
+            (-1, "Don't care"),
+            (0, "Prefer not adjacent"),
+            (1, "Prefer adjacent"),
+        ],
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ["user", "weekday", "hour"]
+        ordering = ["weekday", "hour"]
+
+    def __str__(self) -> str:  # pragma: no cover
+        return f"{self.user.get_full_name()} - {self.get_weekday_display()} {self.get_hour_display()}"

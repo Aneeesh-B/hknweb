@@ -18,4 +18,7 @@ urlpatterns = [
     ),
     path("portal", views.tutoringportal, name="tutoring_portal"),
     path("courses", views.courses, name="courses"),
+    path("signup", views.tutoring_signup, name="signup"),
+    path("signup/success", views.signup_success, name="signup_success"),
+    path("api/availability", views.get_availability_data, name="availability_data"),
 ]

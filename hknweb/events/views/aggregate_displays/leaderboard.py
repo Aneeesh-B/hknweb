@@ -27,18 +27,19 @@ def get_leaderboard(request):
     # Current officer filter
     if active:
         current_semester = Semester.get_current_semester()
-        curr_committeeships = Committeeship.objects.filter(
-            Q(election__semester__semester=current_semester.semester)
-            & Q(election__semester__year=current_semester.year)
-        )
+        if current_semester:
+            curr_committeeships = Committeeship.objects.filter(
+                Q(election__semester__semester=current_semester.semester)
+                & Q(election__semester__year=current_semester.year)
+            )
 
-        curr_users = User.objects.none()
-        for committeeship in curr_committeeships:
-            curr_users |= committeeship.officers.all()
-            curr_users |= committeeship.assistant_officers.all()
-            curr_users |= committeeship.committee_members.all()
+            curr_users = User.objects.none()
+            for committeeship in curr_committeeships:
+                curr_users |= committeeship.officers.all()
+                curr_users |= committeeship.assistant_officers.all()
+                curr_users |= committeeship.committee_members.all()
 
-        res = res.filter(id__in=curr_users.distinct())
+            res = res.filter(id__in=curr_users.distinct())
 
     paginator = Paginator(res, PAGE_SIZE)
 

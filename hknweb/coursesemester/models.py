@@ -42,7 +42,10 @@ class Semester(models.Model):
     # or change functionality to be smarter.
     @staticmethod
     def get_current_semester():
-        latest_year = Semester.objects.order_by("-year").first().year
+        latest_year_obj = Semester.objects.order_by("-year").first()
+        if latest_year_obj is None:
+            return None
+        latest_year = latest_year_obj.year
         latest_year_semesters = Semester.objects.filter(year=latest_year)
         latest_fall = latest_year_semesters.filter(semester="Fall")
         if latest_fall.exists():

@@ -11,6 +11,7 @@ import os
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "*",  # Allow all hosts in development (safe when DEBUG=True)
     "localhost",
     "127.0.0.1",
     "hkn.eecs.berkeley.edu",
